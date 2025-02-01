@@ -71,7 +71,7 @@ async function verifyTask(columnLocator, data) {
 
 /**
  * Verifies the tags associated with a ticket.
- * This function locates the spans (likely tags, name, and date), checks if the number of spans is correct,
+ * This function locates the spans (tags, name, and date), checks if the number of spans is correct,
  * and then iterates through the tags from the JSON, checking if each tag is present in the ticket.
  * @param {Locator} ticketLocator The Playwright locator for the ticket element.
  * @param {Array<string>} tags An array of tag names to verify (from the JSON data).
@@ -79,6 +79,7 @@ async function verifyTask(columnLocator, data) {
 async function verifyTags(ticketLocator, tags) {
   const spansinfocusedTicket = ticketLocator.locator('span');
   const spancount = await spansinfocusedTicket.count();
+  //this expect statement is another shortcut I made to not overengineer. This should fail if the devs start adding new spans to the tickets
   expect(spancount).toEqual(tags.length + 2, { message: "Incorrect number of spans found in the ticket." });
 
   for (const tag of tags) {
@@ -124,7 +125,7 @@ test.describe('Task Board Verification Checks', () => {
 
   /**
    * This loop iterates through the test data from the JSON file, creating a separate test case for each data entry.
-   * Each test case verifies a specific task within a column on the Projects page.
+   * Each test case verifies a specific task and tag within a column on the Projects page.
    */
   testData.forEach(async (data, index) => {
     test(`Test Case ${index + 1}: Verify "${data.task}" in the "${data.column}" column on the "${data.navigationTarget}" page`, async ({ page }) => {
